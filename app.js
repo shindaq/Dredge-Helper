@@ -1,14 +1,5 @@
 "use strict";
 
-/*
- * Dredge Helper — Prospecting location optimizer
- * Data comes from data.js (global PROSPECTING_DATA), generated from
- * optimal_caps.json. Each mineral maps to its locations, already ordered
- * from best (highest drop chance) to worst.
- */
-
-// Locations that are hard to reach / premium. When one of these is the best
-// location for a mineral, we also surface the next-best ("Top 2") as a backup.
 const SPECIAL_LOCATIONS = new Set([
   "Infernal Heart",
   "Timelocked Sanctuary",
@@ -21,10 +12,6 @@ const MINERAL_NAMES = Object.keys(PROSPECTING_DATA).sort((a, b) =>
 
 const MAX_SUGGESTIONS = 10;
 
-/* ------------------------------ Matching ------------------------------ */
-
-// Returns minerals matching the query, ranked: prefix matches first, then
-// substring matches. Both groups are alphabetical (MINERAL_NAMES is sorted).
 function searchMinerals(query) {
   const q = query.trim().toLowerCase();
   if (!q) return [];
@@ -44,7 +31,6 @@ function exactMatch(query) {
   return MINERAL_NAMES.find((name) => name.toLowerCase() === q) || null;
 }
 
-// Resolve typed text to a single mineral, or null if ambiguous / not found.
 function resolveMineral(value) {
   const exact = exactMatch(value);
   if (exact) return exact;
@@ -52,21 +38,14 @@ function resolveMineral(value) {
   return matches.length === 1 ? matches[0] : null;
 }
 
-/* ----------------------------- Formatting ----------------------------- */
-
 function formatNumber(n) {
   return Number(n).toLocaleString("en-US");
 }
 
 function formatChance(chanceStr) {
-  // The data already stores chances as precise percentage strings
-  // (e.g. "44.6568%", "0.0015%", "0.0000%"). Show them exactly as-is — no
-  // rounding, so small values stay readable instead of collapsing to "~0%".
   return String(chanceStr).trim();
 }
 
-// A luck cap can be a number or the marker "MAX" (cap is beyond the in-game
-// maximum, so you raise luck as high as possible to approach the best chance).
 function isMaxCap(cap) {
   return typeof cap === "string" && cap.trim().toUpperCase() === "MAX";
 }
@@ -77,8 +56,6 @@ function formatCap(cap) {
   return Number.isFinite(n) ? n.toLocaleString("en-US") : String(cap);
 }
 
-// Parse "chance_at_luck" (an object mapping luck level -> chance string) into a
-// list of [luckNumber, chanceString] pairs sorted by ascending luck level.
 function parseChanceAtLuck(value) {
   if (!value || typeof value !== "object") return [];
   return Object.keys(value)
@@ -86,8 +63,6 @@ function parseChanceAtLuck(value) {
     .filter((pair) => Number.isFinite(pair[0]))
     .sort((a, b) => a[0] - b[0]);
 }
-
-/* --------------------------- Autocomplete UI -------------------------- */
 
 function setupCombo(input, list, index, inputs, optimizeBtn) {
   let suggestions = [];
@@ -108,7 +83,6 @@ function setupCombo(input, list, index, inputs, optimizeBtn) {
       li.setAttribute("role", "option");
       li.setAttribute("aria-selected", i === activeIndex ? "true" : "false");
       li.textContent = name;
-      // mousedown fires before the input's blur, so we can select cleanly.
       li.addEventListener("mousedown", (e) => {
         e.preventDefault();
         select(name);
@@ -170,38 +144,29 @@ function setupCombo(input, list, index, inputs, optimizeBtn) {
       }
     } else if (e.key === "Enter") {
       e.preventDefault();
-      // 1) An explicitly highlighted suggestion wins.
       if (open && activeIndex >= 0 && suggestions[activeIndex]) {
         select(suggestions[activeIndex]);
         return;
       }
-      // 2) Spec: when only one match remains, auto-fill it and advance.
       const matches = searchMinerals(input.value);
       if (matches.length === 1) {
         select(matches[0]);
         return;
       }
-      // 3) Otherwise accept an exact match even if other names contain it.
       const exact = exactMatch(input.value);
       if (exact) {
         select(exact);
         return;
       }
-      // 4) Nothing to resolve: on the last field, run the optimizer.
       if (index === inputs.length - 1) optimizeBtn.click();
     } else if (e.key === "Escape") {
       closeList();
     }
   });
 
-  // Delay so a suggestion click (mousedown) can register before closing.
   input.addEventListener("blur", () => setTimeout(closeList, 120));
 }
 
-/* ------------------------------ Results ------------------------------- */
-
-// Build a <div class="stat"> with a label and a value. `value` may be a string
-// or a pre-built DOM node (used for the MAX cap / chance-at-luck markup).
 function stat(label, value) {
   const wrap = document.createElement("div");
   wrap.className = "stat";
@@ -221,8 +186,6 @@ function capValueNode(cap) {
   return span;
 }
 
-// For MAX-cap locations: a compact table of the chance at each luck level, so
-// you can compare builds (e.g. Items Farming at 25,000 vs Luck at 100,000).
 function buildLuckBreakdown(data) {
   const pairs = parseChanceAtLuck(data.chance_at_luck);
   if (pairs.length === 0) return null;
@@ -233,7 +196,7 @@ function buildLuckBreakdown(data) {
   const note = document.createElement("p");
   note.className = "lb-note";
   note.textContent = isMaxCap(data.cap)
-    ? "No hard cap — more luck is always better. The chance above is the ceiling; below is the chance at common luck levels:"
+    ? "No hard cap - more luck is always better. The chance above is the ceiling; below is the chance at common luck levels:"
     : "Chance at common luck levels:";
   wrap.appendChild(note);
 
@@ -276,7 +239,6 @@ function buildLocationBlock(tag, locName, data, variant, note) {
   stats.appendChild(stat("Odds", "1 in " + formatNumber(data.one_in)));
   block.appendChild(stats);
 
-  // Special-location explanation (passed in by buildCard), if any.
   if (note) {
     const n = document.createElement("p");
     n.className = "loc-note";
@@ -284,7 +246,6 @@ function buildLocationBlock(tag, locName, data, variant, note) {
     block.appendChild(n);
   }
 
-  // Per-luck-level chance breakdown for MAX caps; otherwise a short MAX note.
   const breakdown = buildLuckBreakdown(data);
   if (breakdown) {
     block.appendChild(breakdown);
@@ -292,7 +253,7 @@ function buildLocationBlock(tag, locName, data, variant, note) {
     const n = document.createElement("p");
     n.className = "loc-note";
     n.textContent =
-      "Cap is MAX — raise your luck level as high as possible to approach this chance.";
+      "Cap is MAX - raise your luck level as high as possible to approach this chance.";
     block.appendChild(n);
   }
 
@@ -307,7 +268,7 @@ function buildLocationBlock(tag, locName, data, variant, note) {
 }
 
 function buildCard(mineral) {
-  const entries = Object.entries(PROSPECTING_DATA[mineral]); // best -> worst
+  const entries = Object.entries(PROSPECTING_DATA[mineral]);
   const card = document.createElement("article");
   card.className = "result-card";
 
@@ -322,9 +283,9 @@ function buildCard(mineral) {
 
   const bestNote =
     isSpecial && hasBackup
-      ? "Premium / hard-to-reach zone — a more accessible backup is shown below."
+      ? "Premium / hard-to-reach zone - a more accessible backup is shown below."
       : isSpecial && !hasBackup
-      ? "Premium zone — no alternative location is available for this mineral."
+      ? "Premium zone - no alternative location is available for this mineral."
       : "";
 
   card.appendChild(
@@ -402,8 +363,6 @@ function runOptimize(inputs, resultsEl) {
   resolved.forEach((name) => grid.appendChild(buildCard(name)));
   resultsEl.appendChild(grid);
 }
-
-/* -------------------------------- Init -------------------------------- */
 
 document.addEventListener("DOMContentLoaded", () => {
   const inputs = Array.from(document.querySelectorAll(".mineral-input"));

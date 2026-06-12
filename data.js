@@ -1,5 +1,3 @@
-// Auto-generated from optimal_caps.json - do not edit by hand.
-// Regenerate after changing the JSON (see README).
 const PROSPECTING_DATA = {
   "Amethyst": {
     "Rubble Creek Sands": {

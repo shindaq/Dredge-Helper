@@ -40,7 +40,6 @@ body {
   padding: 40px 20px 56px;
 }
 
-/* ---------- Header ---------- */
 .site-header {
   margin-bottom: 26px;
 }
@@ -59,7 +58,6 @@ body {
   font-size: 1rem;
 }
 
-/* ---------- Layout ---------- */
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
@@ -73,7 +71,6 @@ body {
   }
 }
 
-/* ---------- Panel ---------- */
 .panel {
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -107,7 +104,6 @@ body {
   letter-spacing: 0.6px;
 }
 
-/* ---------- Combo / autocomplete ---------- */
 .combo {
   position: relative;
 }
@@ -169,7 +165,6 @@ body {
   color: #ffffff;
 }
 
-/* ---------- Actions ---------- */
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -208,7 +203,6 @@ body {
   border-color: var(--accent);
 }
 
-/* ---------- Side note ---------- */
 .sidenote {
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -243,7 +237,6 @@ body {
   }
 }
 
-/* ---------- Results ---------- */
 .results {
   margin-top: 22px;
 }
@@ -345,7 +338,6 @@ body {
   font-weight: 700;
 }
 
-/* Per-luck-level chance breakdown (MAX caps) */
 .luck-breakdown {
   margin-top: 12px;
   padding-top: 10px;
@@ -395,7 +387,6 @@ body {
   color: #e9c46a;
 }
 
-/* ---------- Hints ---------- */
 .hint {
   text-align: center;
   color: var(--muted);
