@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dredge Helper — Prospecting location optimizer</title>
+    <meta
+      name="description"
+      content="Find the best dig location and luck cap for any mineral in the Roblox game Prospecting."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%92%8E</text></svg>"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <header class="site-header">
+        <h1 class="site-title">Dredge Helper</h1>
+      </header>
+
+      <div class="layout">
+        <div class="main-col">
+          <section class="panel" aria-label="Mineral input">
+            <div class="fields">
+              <div class="field">
+                <label class="field-label" for="m1">Mineral 1</label>
+                <div class="combo">
+                  <input
+                    id="m1"
+                    class="mineral-input"
+                    type="text"
+                    autocomplete="off"
+                    spellcheck="false"
+                    role="combobox"
+                    aria-expanded="false"
+                    aria-autocomplete="list"
+                    aria-controls="sugg-list-0"
+                    placeholder="e.g. Copper"
+                  />
+                  <ul id="sugg-list-0" class="suggestions" role="listbox" hidden></ul>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="m2">Mineral 2</label>
+                <div class="combo">
+                  <input
+                    id="m2"
+                    class="mineral-input"
+                    type="text"
+                    autocomplete="off"
+                    spellcheck="false"
+                    role="combobox"
+                    aria-expanded="false"
+                    aria-autocomplete="list"
+                    aria-controls="sugg-list-1"
+                    placeholder="e.g. Diamond"
+                  />
+                  <ul id="sugg-list-1" class="suggestions" role="listbox" hidden></ul>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="m3">Mineral 3</label>
+                <div class="combo">
+                  <input
+                    id="m3"
+                    class="mineral-input"
+                    type="text"
+                    autocomplete="off"
+                    spellcheck="false"
+                    role="combobox"
+                    aria-expanded="false"
+                    aria-autocomplete="list"
+                    aria-controls="sugg-list-2"
+                    placeholder="e.g. Opal"
+                  />
+                  <ul id="sugg-list-2" class="suggestions" role="listbox" hidden></ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="optimize-btn" class="btn btn-primary" type="button">
+                Optimize
+              </button>
+              <button id="clear-btn" class="btn btn-ghost" type="button">Clear</button>
+            </div>
+          </section>
+
+          <section id="results" class="results" aria-live="polite"></section>
+        </div>
+
+        <aside class="sidenote" aria-label="Notes">
+          <h2 class="sidenote-title">Notes</h2>
+          <p>
+            The data used here comes from community research and may not match
+            the actual in-game values.
+          </p>
+          <p>
+            If a <strong>Luck Cap</strong> shows as <strong>MAX</strong>, raise
+            your luck level to get closer to the optimal chance. The value in
+            parentheses is the chance at a luck level near that cap.
+          </p>
+          <p>
+            If you have an Items Farming build at 25,000 luck and a Luck build at
+            100,000 luck and the difference is tiny, pick the higher capacity
+            build (Items Farming) and give up a small percentage.
+          </p>
+        </aside>
+      </div>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
